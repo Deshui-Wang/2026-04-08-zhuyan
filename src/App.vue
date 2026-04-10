@@ -25,13 +25,33 @@ import { ElMessage } from 'element-plus'
 import FunctionMap from './components/FunctionMap.vue'
 import PurchaseAdvisor from './components/PurchaseAdvisor.vue'
 
-const activeCategory = ref('智能助研')
+const activeCategory = ref('new AI工具')
 const showFunctionMap = ref(false)
 const showPurchaseAdvisor = ref(false)
 
-const categories = ['基座系统', '智能助研', '智能助教', '智能伴学', '智能助管', '智能就业']
+const categories = ['new AI工具', '基座系统', '智能助研', '智能助教', '智能伴学', '智能助管', '智能就业']
 
 const productsData = {
+  'new AI工具': [
+    {
+      id: 501,
+      title: 'HappyLife AI',
+      description: '多维度情感计算与生活智能辅助，为您打造更有温度的 AI 生活伴侣。',
+      icon: HeartPlus,
+      link: '#',
+      stats: '情感智能驱动',
+      color: '#f43f5e',
+    },
+    {
+      id: 502,
+      title: 'DS多媒体工厂',
+      description: '一站式多媒体内容创作中枢，支持 AI 视频生成、智能剪辑与特效合成。',
+      icon: Video,
+      link: '#',
+      stats: '专业创作引擎',
+      color: '#8b5cf6',
+    }
+  ],
   '基座系统': [
     {
       id: 101,
@@ -40,24 +60,6 @@ const productsData = {
       icon: Workflow,
       link: 'https://cloudmind.deshui27.cn/',
       stats: '弹性算力调度',
-      color: '#475569',
-    },
-    {
-      id: 102,
-      title: '数据中心',
-      description: '汇聚全校多维业务数据，实现治理、存储与血缘追踪的闭环管理。',
-      icon: DatabaseZap,
-      link: '#',
-      stats: '亿级数据处理',
-      color: '#475569',
-    },
-    {
-      id: 103,
-      title: '模型中心',
-      description: '托管多种通用与行业大模型，提供统一的 API 调度与微调实验环境。',
-      icon: BrainCircuit,
-      link: '#',
-      stats: '多模态模型集成',
       color: '#475569',
     },
     {
@@ -71,15 +73,6 @@ const productsData = {
     }
   ],
   '智能助研': [
-    {
-      id: 1,
-      title: '专利交底辅助（已有）',
-      description: '智能生成标准专利交底材料，辅助查新去重，提升申报转化率。',
-      iconUrl: '/pic/zhuanli.png',
-      link: 'https://agent.lhrj.cn/previewzl',
-      stats: '1.2k+ 报件与检测',
-      color: '#0ea5e9',
-    },
     {
       id: 2,
       title: '论文写作助手（超智科研社）',
@@ -114,33 +107,6 @@ const productsData = {
       icon: MapPin,
       link: 'https://ncst.cailian.net/',
       stats: '量化模型驱动',
-      color: '#0ea5e9',
-    },
-    {
-      id: 58,
-      title: '生成式AI分析',
-      description: '基于大语言模型的深入分析与总结，快速提炼海量文献的核心见解。',
-      icon: BrainCircuit,
-      link: '#',
-      stats: '多模态数据接入',
-      color: '#0ea5e9',
-    },
-    {
-      id: 67,
-      title: '产业大数据分析与挖掘',
-      description: '汇聚行业全景数据，利用图谱与深度学习构建高价值的科研决策支持系统。',
-      icon: DatabaseZap,
-      link: '#',
-      stats: '亿级实体构建',
-      color: '#0ea5e9',
-    },
-    {
-      id: 76,
-      title: '工作流智能体创作',
-      description: '零代码或低代码构建专属 AI 工作流与 Agent，让智能执行随需而变。',
-      icon: Workflow,
-      link: '#',
-      stats: '500+ 组件适配',
       color: '#0ea5e9',
     }
   ],
@@ -253,15 +219,6 @@ const productsData = {
       icon: Kanban,
       link: 'https://studentspace.deshui27.cn/',
       stats: '云端智慧空间',
-      color: '#ec4899',
-    },
-    {
-      id: 9,
-      title: '智能体创作平台',
-      description: '学生可以轻松创建属于自己的学习辅导助手与习惯养成 Agent。',
-      icon: Bot,
-      link: '#',
-      stats: '提升自主学习',
       color: '#ec4899',
     },
     {
