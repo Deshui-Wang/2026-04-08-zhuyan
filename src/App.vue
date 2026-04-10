@@ -38,7 +38,7 @@ const productsData = {
       title: 'HappyLife AI',
       description: '多维度情感计算与生活智能辅助，为您打造更有温度的 AI 生活伴侣。',
       icon: HeartPlus,
-      link: '#',
+      link: 'https://happylife.deshui27.cn/',
       stats: '情感智能驱动',
       color: '#f43f5e',
     },
@@ -47,7 +47,7 @@ const productsData = {
       title: 'DS多媒体工厂',
       description: '一站式多媒体内容创作中枢，支持 AI 视频生成、智能剪辑与特效合成。',
       icon: Video,
-      link: '#',
+      link: 'https://duomeiti.deshui27.cn/',
       stats: '专业创作引擎',
       color: '#8b5cf6',
     }
