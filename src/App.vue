@@ -540,10 +540,11 @@ const handleNavigate = (link) => {
 /* Tabs Container */
 .tabs-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   margin-bottom: 3.5rem;
   width: 100%;
+  position: relative;
 }
 
 /* Category Tabs */
@@ -584,6 +585,8 @@ const handleNavigate = (link) => {
 }
 
 .actions-group {
+  position: absolute;
+  right: 0;
   display: flex;
   align-items: center;
   gap: 12px;
