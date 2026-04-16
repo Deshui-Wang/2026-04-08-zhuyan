@@ -204,8 +204,8 @@ const reset = () => {
   showResults.value = false
 }
 
-const handleOpenProduct = (link) => {
-  emit('navigate', link)
+const handleOpenProduct = (product) => {
+  emit('navigate', product)
 }
 </script>
 
@@ -348,7 +348,7 @@ const handleOpenProduct = (link) => {
               :key="product.id"
               class="recommendation-item"
               :class="{ 'base-item': product.isBase }"
-              @click="handleOpenProduct(product.link)"
+              @click="handleOpenProduct(product)"
             >
               <div class="product-icon" :style="{ backgroundColor: `${product.color}15`, color: product.color }">
                 <component :is="product.icon" :size="20" v-if="product.icon" />

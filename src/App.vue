@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, watch, nextTick } from 'vue'
 import {
   FileText,
   PenBox,
@@ -19,18 +19,49 @@ import {
   MapPin,
   LayoutGrid,
   ShoppingCart,
-  Sparkles
+  Sparkles,
+  Lock
 } from 'lucide-vue-next'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import PurchaseAdvisor from './components/PurchaseAdvisor.vue'
 
-const activeCategory = ref('new AI工具')
+const activeCategory = ref('基座系统')
 const showPurchaseAdvisor = ref(false)
 
-const categories = ['new AI工具', '基座系统', '智能助研', '智能助教', '智能伴学', '智能助管', '智能就业']
+// Custom Password Modal State
+const showPasswordModal = ref(false)
+const passwordInput = ref('')
+const pendingItem = ref(null)
+const passwordInputRef = ref(null)
+
+const closePasswordModal = () => {
+  showPasswordModal.value = false
+  passwordInput.value = ''
+  pendingItem.value = null
+}
+
+const submitPassword = () => {
+  if (passwordInput.value === '112027') {
+    window.open(pendingItem.value.link, '_blank')
+    closePasswordModal()
+  } else {
+    ElMessage.error('访问密码错误，请重新输入')
+    passwordInput.value = ''
+  }
+}
+
+watch(showPasswordModal, (val) => {
+  if (val) {
+    nextTick(() => {
+      passwordInputRef.value?.focus()
+    })
+  }
+})
+
+const categories = ['基座系统', '智能助研', '智能助教', '智能伴学', '智能助管', '智能就业', '顾得工具']
 
 const productsData = {
-  'new AI工具': [
+  '顾得工具': [
     {
       id: 501,
       title: 'HappyLife AI',
@@ -48,6 +79,15 @@ const productsData = {
       link: 'https://duomeiti.deshui27.cn/',
       stats: '专业创作引擎',
       color: '#8b5cf6',
+    },
+    {
+      id: 503,
+      title: '得乐｜DeLove',
+      description: '智能情感治愈与生活陪伴。⚠️ 建议使用手机浏览器打开体验更佳。',
+      icon: HeartPlus,
+      link: 'https://delove.deshui27.cn/',
+      stats: '移动端深度优化',
+      color: '#f43f5e',
     }
   ],
   '基座系统': [
@@ -300,22 +340,18 @@ const productsData = {
 
 const activeId = ref(null)
 
-const handleNavigate = (link) => {
+const handleNavigate = (item) => {
+  const link = typeof item === 'string' ? item : item.link
+  const title = typeof item === 'object' ? item.title : ''
+
+  if (title === 'HappyLife AI' || link === 'https://happylife.deshui27.cn/') {
+    pendingItem.value = { title, link }
+    showPasswordModal.value = true
+    return;
+  }
+
   if (link && link !== '#') {
-    // Attempt copy credentials to clipboard
-    const copyText = 'chaozhiren';
-    navigator.clipboard.writeText(copyText).then(() => {
-      ElMessage({
-        message: '账号 chaozhiren 已复制，密码为 123456',
-        type: 'success',
-        duration: 3000
-      })
-      setTimeout(() => {
-        window.open(link, '_blank');
-      }, 1000)
-    }).catch(() => {
-      window.open(link, '_blank');
-    })
+    window.open(link, '_blank');
   }
 }
 </script>
@@ -372,7 +408,7 @@ const handleNavigate = (link) => {
           class="product-card"
           @mouseenter="activeId = item.id"
           @mouseleave="activeId = null"
-          @click="handleNavigate(item.link)"
+          @click="handleNavigate(item)"
         >
           <div class="card-glow" :style="{ background: `radial-gradient(circle at right, ${item.color}33, transparent 70%)`, opacity: activeId === item.id ? 1 : 0 }"></div>
           
@@ -397,7 +433,7 @@ const handleNavigate = (link) => {
                 class="enter-btn"
                 :class="{ 'is-active': activeId === item.id }"
                 :style="activeId === item.id ? { backgroundColor: item.color, borderColor: item.color, color: '#fff' } : {}"
-                @click.stop="handleNavigate(item.link)"
+                @click.stop="handleNavigate(item)"
               >
                 进入产品
                 <ArrowRight class="btn-icon" :size="16" />
@@ -411,7 +447,6 @@ const handleNavigate = (link) => {
     <!-- Background decoration -->
     <div class="bg-grid"></div>
 
-    <!-- Purchase Advisor Overlay -->
     <transition name="fade">
       <PurchaseAdvisor 
         v-if="showPurchaseAdvisor" 
@@ -419,6 +454,44 @@ const handleNavigate = (link) => {
         @close="showPurchaseAdvisor = false"
         @navigate="handleNavigate"
       />
+    </transition>
+
+    <!-- Premium Password Modal -->
+    <transition name="modal-fade">
+      <div v-if="showPasswordModal" class="password-modal-overlay" @click.self="closePasswordModal">
+        <div class="password-modal-card">
+          <div class="modal-glow"></div>
+          <div class="modal-header">
+            <div class="lock-icon-wrapper">
+              <Lock :size="28" />
+            </div>
+            <h3>安全访问校验</h3>
+            <p>该资源受密码保护，请输入 6 位访问码以继续</p>
+          </div>
+          
+          <div class="modal-body">
+            <div class="input-container">
+              <input 
+                ref="passwordInputRef"
+                v-model="passwordInput" 
+                type="password" 
+                placeholder="请输入密码" 
+                class="premium-input"
+                @keyup.enter="submitPassword"
+              />
+              <div class="input-focus-border"></div>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button class="modal-btn secondary" @click="closePasswordModal">取消</button>
+            <button class="modal-btn primary" @click="submitPassword">
+              验证并进入
+              <ArrowRight :size="18" />
+            </button>
+          </div>
+        </div>
+      </div>
     </transition>
 
   </div>
@@ -791,5 +864,172 @@ const handleNavigate = (link) => {
     justify-content: space-between;
     align-items: center;
   }
+}
+
+/* Premium Password Modal Styles */
+.password-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.password-modal-card {
+  width: 420px;
+  background: #fff;
+  border-radius: 28px;
+  padding: 40px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.modal-glow {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at center, var(--primary) 0%, transparent 70%);
+  opacity: 0.03;
+  pointer-events: none;
+}
+
+.lock-icon-wrapper {
+  width: 64px;
+  height: 64px;
+  background: #f1f5f9;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  color: var(--text-primary);
+}
+
+.modal-header h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.modal-header p {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 32px;
+}
+
+.modal-body {
+  width: 100%;
+  margin-bottom: 32px;
+}
+
+.input-container {
+  position: relative;
+  width: 100%;
+}
+
+.premium-input {
+  width: 100%;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 16px 20px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  outline: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: center;
+  letter-spacing: 0.2em;
+}
+
+.premium-input::placeholder {
+  letter-spacing: normal;
+  color: #94a3b8;
+  font-weight: 400;
+}
+
+.premium-input:focus {
+  background: #fff;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+.modal-footer {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.modal-btn {
+  flex: 1;
+  padding: 14px 20px;
+  border-radius: 14px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+}
+
+.modal-btn.primary {
+  background: var(--text-primary);
+  color: #fff;
+}
+
+.modal-btn.primary:hover {
+  background: #000;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.15);
+}
+
+.modal-btn.secondary {
+  background: #f1f5f9;
+  color: var(--text-secondary);
+}
+
+.modal-btn.secondary:hover {
+  background: #e2e8f0;
+  color: var(--text-primary);
+}
+
+/* Modal Transitions */
+.modal-fade-enter-active,
+.modal-fade-leave-active {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modal-fade-enter-from,
+.modal-fade-leave-to {
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+.modal-fade-enter-active .password-modal-card {
+  animation: modalIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes modalIn {
+  0% { opacity: 0; transform: translateY(20px) scale(0.9); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 </style>
